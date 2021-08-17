@@ -30,13 +30,6 @@ function Handler() {
 
 Handler.prototype.processMove = function processMove(pendingGameStateUpdate, player) {
   if (this.gameOver || pendingGameStateUpdate == null) return;
-  const validate = () => (typeof pendingGameStateUpdate === 'object'
-  && (pendingGameStateUpdate.tile === null
-  || (typeof pendingGameStateUpdate.tile === 'object' && typeof pendingGameStateUpdate.tile.row === 'number'
-  && typeof pendingGameStateUpdate.tile.column === 'number')) && typeof pendingGameStateUpdate.piece === 'number');
-  if (!validate()) {
-    return;
-  }
   let { tile } = pendingGameStateUpdate;
   const { piece: pieceNumber } = pendingGameStateUpdate;
   if (player === 2) {

@@ -19,21 +19,19 @@ io.on('connection', (socket) => {
   };
 
   const stateUpdateSchema = {
-    piece: value => typeof value === 'number' && value >= 0 && value < 21,
-    tile: value => {
+    piece: (value) => typeof value === 'number' && value >= 0 && value < 21,
+    tile: (value) => {
       const tileSchema = {
-        row: rowVal => typeof rowVal === 'number' && rowVal >= 0 && rowVal < 8,
-        col: colVal => typeof colVal === 'number' && colVal >= 0 && colVal < 9,
-      }
-      return typeof value === 'object' && Object.keys(tileSchema).reduce((prev, key) => (
-        tileSchema[key](value[key]) && prev), true);
+        row: (rowVal) => typeof rowVal === 'number' && rowVal >= 0 && rowVal < 8,
+        col: (colVal) => typeof colVal === 'number' && colVal >= 0 && colVal < 9,
+      };
+      return value === null || (typeof value === 'object' && Object.keys(tileSchema).reduce((prev, key) => (
+        tileSchema[key](value[key]) && prev), true));
     },
   };
 
-  const validateStateUpdate = (stateUpdate) => {
-    return typeof stateUpdate === 'object' && Object.keys(stateUpdateSchema).reduce((prev, key) => (
-      stateUpdateSchema[key](stateUpdate[key]) && prev), true)
-  };
+  const validateStateUpdate = (stateUpdate) => typeof stateUpdate === 'object' && Object.keys(stateUpdateSchema).reduce((prev, key) => (
+    stateUpdateSchema[key](stateUpdate[key]) && prev), true);
 
   const cleanUp = (roomId) => {
     const match = matches[roomId];
