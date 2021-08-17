@@ -23,15 +23,15 @@ io.on('connection', (socket) => {
     tile: (value) => {
       const tileSchema = {
         row: (rowVal) => typeof rowVal === 'number' && rowVal >= 0 && rowVal < 8,
-        col: (colVal) => typeof colVal === 'number' && colVal >= 0 && colVal < 9,
+        column: (colVal) => typeof colVal === 'number' && colVal >= 0 && colVal < 9,
       };
       return value === null || (typeof value === 'object' && Object.keys(tileSchema).reduce((prev, key) => (
         tileSchema[key](value[key]) && prev), true));
     },
   };
 
-  const validateStateUpdate = (stateUpdate) => typeof stateUpdate === 'object' && Object.keys(stateUpdateSchema).reduce((prev, key) => (
-    stateUpdateSchema[key](stateUpdate[key]) && prev), true);
+  const validateStateUpdate = (stateUpdate) => (typeof stateUpdate === 'object' && Object.keys(stateUpdateSchema).reduce((prev, key) => (
+    stateUpdateSchema[key](stateUpdate[key]) && prev), true));
 
   const cleanUp = (roomId) => {
     const match = matches[roomId];
@@ -123,7 +123,9 @@ io.on('connection', (socket) => {
     const {
       handler, player, otherPlayer, otherPlayerSocket,
     } = getInfo();
-    if (validateStateUpdate(stateUpdate)) { handler.processMove(stateUpdate, player); }
+    if (stateUpdate && validateStateUpdate(stateUpdate)) {
+      handler.processMove(stateUpdate, player);
+    }
     socket.emit('update-game-state',
       handler.getBoardState(player),
       handler.getCurrentTurn() === player,
